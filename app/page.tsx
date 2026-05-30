@@ -1,9 +1,5 @@
-const page = () => {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-    </div>
-  );
-};
+import { LandingPage } from "@/components/ui/landing-page";
 
-export default page;
+export default function Page() {
+  return <LandingPage />;
+}
