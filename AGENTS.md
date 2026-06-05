@@ -25,7 +25,7 @@ Frontend:
 * TypeScript
 * Tailwind CSS v4
 * Shadcn UI
-* Framer Motion
+* Motion
 
 Backend:
 
@@ -91,8 +91,6 @@ Favor long-term maintainable solutions.
 ---
 
 ## Folder Structure
-
-src/
 
 app/
 components/
