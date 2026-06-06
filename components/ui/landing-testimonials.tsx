@@ -5,6 +5,7 @@ export function LandingTestimonials() {
   return (
     <section className="bg-[#f7f9fc] py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Testimonials reinforce the product's practical value for different job seekers. */}
         <AnimatedSection className="max-w-3xl">
           <p className="text-sm font-semibold uppercase text-slate-500">Proof</p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight text-slate-950 sm:text-4xl">
@@ -13,6 +14,7 @@ export function LandingTestimonials() {
         </AnimatedSection>
 
         <div className="mt-12 grid gap-4 md:grid-cols-3">
+          {/* Data-backed cards keep social proof copy centralized in landing-data.ts. */}
           {testimonials.map((testimonial, index) => (
             <AnimatedSection
               key={testimonial.name}

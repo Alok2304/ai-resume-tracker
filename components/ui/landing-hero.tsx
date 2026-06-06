@@ -4,12 +4,14 @@ import { motion, useReducedMotion } from "motion/react";
 import { ButtonLink } from "@/components/ui/button";
 
 const scoreItems = [
+  // Demo scores mirror the review categories shown in the hero product preview.
   { label: "Keywords", value: 92 },
   { label: "Formatting", value: 88 },
   { label: "Impact", value: 81 },
 ];
 
 const jobs = [
+  // Sample roles make the pipeline preview feel product-like without requiring live data.
   { role: "Growth Product Manager", stage: "Interview", tone: "bg-emerald-100 text-emerald-700" },
   { role: "Senior UX Researcher", stage: "Applied", tone: "bg-sky-100 text-sky-700" },
   { role: "AI Program Lead", stage: "Saved", tone: "bg-amber-100 text-amber-700" },
@@ -20,6 +22,7 @@ export function LandingHero() {
 
   return (
     <section className="relative overflow-hidden bg-[#f7f9fc]">
+      {/* Subtle grid and top fade add depth while keeping the first viewport readable. */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.08)_1px,transparent_1px)] bg-[size:44px_44px]" />
       <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-white to-transparent" />
 
@@ -73,6 +76,7 @@ export function LandingHero() {
         >
           <div className="rounded-[2rem] border border-white/80 bg-slate-950 p-3 shadow-2xl shadow-slate-900/25">
             <div className="overflow-hidden rounded-[1.4rem] bg-white">
+              {/* Product mockup ties the marketing message to concrete resume and pipeline workflows. */}
               <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
                 <div>
                   <p className="text-sm font-semibold text-slate-500">Resume Review</p>

@@ -7,6 +7,7 @@ type Size = "sm" | "md" | "lg";
 const baseClasses =
   "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-60";
 
+// Shared visual variants keep landing CTAs and header actions consistent.
 const variantClasses: Record<Variant, string> = {
   primary:
     "bg-slate-950 text-white shadow-sm shadow-slate-900/20 hover:bg-slate-800 focus-visible:outline-slate-950 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200",
@@ -18,6 +19,7 @@ const variantClasses: Record<Variant, string> = {
     "bg-white text-slate-950 hover:bg-slate-100 focus-visible:outline-white",
 };
 
+// Size tokens preserve predictable button heights across dense nav and larger CTA areas.
 const sizeClasses: Record<Size, string> = {
   sm: "h-9 px-3 text-sm",
   md: "h-11 px-5 text-sm",
@@ -28,6 +30,7 @@ function cn(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+// Native button variant for form actions and future authenticated flows.
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
   variant?: Variant;
@@ -51,6 +54,7 @@ export function Button({
   );
 }
 
+// Link-styled button used for landing-page anchors and Next.js client navigation.
 type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   children: ReactNode;
   href: string;

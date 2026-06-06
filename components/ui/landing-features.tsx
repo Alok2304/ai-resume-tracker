@@ -5,6 +5,7 @@ export function LandingFeatures() {
   return (
     <section id="features" className="bg-slate-950 py-20 text-white sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Feature copy focuses on connected job-search workflows instead of isolated tools. */}
         <AnimatedSection className="max-w-3xl">
           <p className="text-sm font-semibold uppercase text-emerald-300">Platform</p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
@@ -16,6 +17,7 @@ export function LandingFeatures() {
         </AnimatedSection>
 
         <div className="mt-12 grid gap-4 md:grid-cols-2">
+          {/* Data-driven cards keep feature messaging easy to update as product scope changes. */}
           {features.map((feature, index) => (
             <AnimatedSection
               key={feature.title}

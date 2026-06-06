@@ -5,6 +5,7 @@ export function LandingCta() {
   return (
     <section id="contact" className="bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Final conversion block repeats the primary resume-upload path after product proof. */}
         <AnimatedSection className="overflow-hidden rounded-lg bg-slate-950 px-6 py-14 text-center text-white sm:px-10">
           <p className="text-sm font-semibold uppercase text-emerald-300">Start sharper</p>
           <h2 className="mx-auto mt-3 max-w-3xl text-3xl font-semibold leading-tight sm:text-5xl">

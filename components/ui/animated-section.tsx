@@ -17,6 +17,7 @@ export function AnimatedSection({
   const shouldReduceMotion = useReducedMotion();
 
   return (
+    // Reusable reveal wrapper respects reduced-motion users while adding scroll rhythm.
     <motion.div
       className={className}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}

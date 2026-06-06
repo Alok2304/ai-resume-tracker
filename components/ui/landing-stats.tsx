@@ -5,6 +5,7 @@ export function LandingStats() {
   return (
     <section className="bg-white py-10">
       <div className="mx-auto grid max-w-7xl gap-3 px-4 sm:px-6 md:grid-cols-4 lg:px-8">
+        {/* High-level metrics provide a quick credibility band immediately after the hero. */}
         {stats.map((stat, index) => (
           <AnimatedSection
             key={stat.label}

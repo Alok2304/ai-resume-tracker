@@ -10,6 +10,7 @@ import { LandingWorkflow } from "@/components/ui/landing-workflow";
 export function LandingPage() {
   return (
     <main className="flex-1">
+      {/* Compose the public landing journey from hero proof points through conversion CTA. */}
       <LandingHero />
       <LandingStats />
       <LandingFeatures />

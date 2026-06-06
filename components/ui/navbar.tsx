@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button, ButtonLink } from "@/components/ui/button";
 
 const navLinks = [
+  // Header anchors align with the landing sections rendered by LandingPage.
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "Workflow" },
   { href: "#pricing", label: "Dashboard" },
@@ -17,6 +18,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Brand link doubles as the home affordance on every landing-page viewport. */}
         <Link href="/" className="flex items-center gap-3" aria-label="CareerFlow home">
           <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-950 text-sm font-bold text-white">
             CF
@@ -57,6 +59,7 @@ export default function Navbar() {
 
       {isOpen ? (
         <div className="border-t border-slate-200 bg-white px-4 py-4 md:hidden">
+          {/* Mobile menu repeats the same anchors and closes after each selection. */}
           <nav className="mx-auto flex max-w-7xl flex-col gap-2" aria-label="Mobile navigation">
             {navLinks.map((link) => (
               <Link

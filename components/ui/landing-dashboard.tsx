@@ -1,12 +1,14 @@
 import { AnimatedSection } from "@/components/ui/animated-section";
 
 const actions = [
+  // Representative recommendations demonstrate how analysis turns into next actions.
   "Add quantified ownership to the launch bullet",
   "Mirror 6 missing keywords from the target job description",
   "Move education below experience for senior roles",
 ];
 
 const columns = [
+  // Values are scaled into bars to preview application analytics without chart dependencies.
   { label: "Saved", value: 8, color: "bg-amber-400" },
   { label: "Applied", value: 14, color: "bg-sky-400" },
   { label: "Interview", value: 5, color: "bg-emerald-400" },
@@ -17,6 +19,7 @@ export function LandingDashboard() {
   return (
     <section id="pricing" className="bg-white py-20 sm:py-24">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+        {/* This section previews the signed-in dashboard value while staying on the landing page. */}
         <AnimatedSection className="max-w-xl">
           <p className="text-sm font-semibold uppercase text-slate-500">Command center</p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight text-slate-950 sm:text-4xl">

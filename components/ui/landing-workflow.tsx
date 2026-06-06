@@ -5,6 +5,7 @@ export function LandingWorkflow() {
   return (
     <section id="how-it-works" className="bg-[#f7f9fc] py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* The workflow section turns the product promise into a simple three-step path. */}
         <AnimatedSection className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
             <p className="text-sm font-semibold uppercase text-slate-500">Workflow</p>
@@ -18,6 +19,7 @@ export function LandingWorkflow() {
         </AnimatedSection>
 
         <div className="mt-12 grid gap-4 md:grid-cols-3">
+          {/* Staggering each step slightly makes the process scan naturally on scroll. */}
           {workflow.map((item, index) => (
             <AnimatedSection
               key={item.step}
