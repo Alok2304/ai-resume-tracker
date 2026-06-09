@@ -40,7 +40,7 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-3 md:flex">
           <Button variant="ghost">Sign In</Button>
-          <ButtonLink href="#upload">Get Started</ButtonLink>
+          <ButtonLink href="/upload-resume">Get Started</ButtonLink>
         </div>
 
         <button
@@ -71,7 +71,7 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <ButtonLink href="#upload" className="mt-2" onClick={() => setIsOpen(false)}>
+            <ButtonLink href="/upload-resume" className="mt-2" onClick={() => setIsOpen(false)}>
               Get Started
             </ButtonLink>
           </nav>

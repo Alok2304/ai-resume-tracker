@@ -15,7 +15,7 @@ export function LandingCta() {
             Bring your resume, target roles, and job search pipeline into one place built for steady progress.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <ButtonLink href="#upload" variant="light" size="lg">
+            <ButtonLink href="/upload-resume" variant="light" size="lg">
               Upload Resume
             </ButtonLink>
             <ButtonLink href="#how-it-works" variant="secondary" size="lg">

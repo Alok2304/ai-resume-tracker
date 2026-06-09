@@ -43,7 +43,7 @@ export function LandingHero() {
             Upload your resume, get an ATS score with practical fixes, and track every job opportunity from first save to final offer.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="#upload" size="lg">
+            <ButtonLink href="/upload-resume" size="lg">
               Upload Resume
               <span aria-hidden="true">-&gt;</span>
             </ButtonLink>
