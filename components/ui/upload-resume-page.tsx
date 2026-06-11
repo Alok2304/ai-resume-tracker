@@ -1,19 +1,26 @@
 "use client";
 
+import { useUser } from "@clerk/nextjs";
 import { useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { UploadInsightsPreview } from "@/components/ui/upload-insights-preview";
 import {
   acceptedResumeTypes,
   maxResumeFileSize,
-  resumeInsights,
-  resumeRecommendations,
   resumeReviewChecklist,
 } from "@/components/ui/upload-resume-data";
 import type { UploadStatus } from "@/components/ui/upload-resume-data";
 import { UploadResumeDropzone } from "@/components/ui/upload-resume-dropzone";
 import { UploadResumeHero } from "@/components/ui/upload-resume-hero";
+import { UploadReviewContext } from "@/components/ui/upload-review-context";
 import { UploadReviewProgress } from "@/components/ui/upload-review-progress";
+import type { ResumeReviewResult } from "@/types/resume-review";
+
+type ResumeReviewApiResponse = {
+  data?: ResumeReviewResult;
+  error?: string;
+};
 
 function getValidationError(file: File) {
   const extension = file.name.split(".").pop()?.toLowerCase();
@@ -31,8 +38,15 @@ function getValidationError(file: File) {
 }
 
 export function UploadResumePage() {
+  const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
+  const { isLoaded, isSignedIn } = useUser();
+  const requestIdRef = useRef(0);
+  const redirectTimerRef = useRef<number | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [review, setReview] = useState<ResumeReviewResult | null>(null);
+  const [targetRole, setTargetRole] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
   const [error, setError] = useState("");
   const [status, setStatus] = useState<UploadStatus>("idle");
   const [progress, setProgress] = useState(0);
@@ -46,24 +60,58 @@ export function UploadResumePage() {
   }, [progress, status]);
 
   useEffect(() => {
-    if (!selectedFile) {
+    if (status !== "checking") {
       return;
     }
 
-    const timers = [
-      window.setTimeout(() => setProgress(38), 350),
-      window.setTimeout(() => setProgress(64), 850),
-      window.setTimeout(() => setProgress(88), 1300),
-      window.setTimeout(() => {
-        setProgress(100);
-        setStatus("complete");
-      }, 1750),
-    ];
+    const timer = window.setInterval(() => {
+      setProgress((currentProgress) => Math.min(currentProgress + 8, 88));
+    }, 450);
 
     return () => {
-      timers.forEach(window.clearTimeout);
+      window.clearInterval(timer);
     };
-  }, [selectedFile]);
+  }, [status]);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimerRef.current) {
+        window.clearTimeout(redirectTimerRef.current);
+      }
+    };
+  }, []);
+
+  function redirectToSignup() {
+    if (redirectTimerRef.current) {
+      window.clearTimeout(redirectTimerRef.current);
+    }
+
+    redirectTimerRef.current = window.setTimeout(() => {
+      router.push("/sign-up?redirect_url=/upload-resume");
+    }, 900);
+  }
+
+  function updateTargetRole(value: string) {
+    setTargetRole(value);
+
+    if (review) {
+      requestIdRef.current += 1;
+      setReview(null);
+      setStatus("idle");
+      setProgress(0);
+    }
+  }
+
+  function updateJobDescription(value: string) {
+    setJobDescription(value);
+
+    if (review) {
+      requestIdRef.current += 1;
+      setReview(null);
+      setStatus("idle");
+      setProgress(0);
+    }
+  }
 
   function selectFile(file?: File) {
     if (!file) {
@@ -74,20 +122,98 @@ export function UploadResumePage() {
 
     if (validationError) {
       setSelectedFile(null);
+      setReview(null);
       setStatus("idle");
       setProgress(0);
       setError(validationError);
       return;
     }
 
+    requestIdRef.current += 1;
     setError("");
-    setStatus("checking");
-    setProgress(12);
+    setReview(null);
+    setStatus("idle");
+    setProgress(0);
     setSelectedFile(file);
   }
 
+  async function generateReview() {
+    if (!selectedFile) {
+      setError("Upload a resume before generating an ATS score.");
+      return;
+    }
+
+    if (!isLoaded) {
+      setReview(null);
+      setStatus("idle");
+      setProgress(0);
+      setError("Checking your sign-in status. Please try again in a moment.");
+      return;
+    }
+
+    if (!isSignedIn) {
+      requestIdRef.current += 1;
+      setReview(null);
+      setStatus("idle");
+      setProgress(0);
+      setError("You need to log in before generating a resume review. Redirecting you to sign up...");
+      redirectToSignup();
+      return;
+    }
+
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
+
+    setError("");
+    setReview(null);
+    setStatus("checking");
+    setProgress(12);
+
+    const formData = new FormData();
+    formData.append("resume", selectedFile);
+
+    if (targetRole.trim()) {
+      formData.append("targetRole", targetRole.trim());
+    }
+
+    if (jobDescription.trim()) {
+      formData.append("jobDescription", jobDescription.trim());
+    }
+
+    try {
+      const response = await fetch("/api/resume-review", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = (await response.json()) as ResumeReviewApiResponse;
+
+      if (requestIdRef.current !== requestId) {
+        return;
+      }
+
+      if (!response.ok || !payload.data) {
+        throw new Error(payload.error || "Unable to review this resume right now.");
+      }
+
+      setReview(payload.data);
+      setProgress(100);
+      setStatus("complete");
+    } catch (requestError) {
+      if (requestIdRef.current !== requestId) {
+        return;
+      }
+
+      setReview(null);
+      setStatus("idle");
+      setProgress(0);
+      setError(requestError instanceof Error ? requestError.message : "Unable to review this resume right now.");
+    }
+  }
+
   function resetUpload() {
+    requestIdRef.current += 1;
     setSelectedFile(null);
+    setReview(null);
     setError("");
     setStatus("idle");
     setProgress(0);
@@ -99,15 +225,27 @@ export function UploadResumePage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.05)_1px,transparent_1px)] bg-size-[42px_42px]" />
         <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-20">
           <UploadResumeHero shouldReduceMotion={shouldReduceMotion} />
-          <UploadResumeDropzone
-            error={error}
-            progress={progress}
-            selectedFile={selectedFile}
-            shouldReduceMotion={shouldReduceMotion}
-            status={status}
-            onFileSelect={selectFile}
-            onReset={resetUpload}
-          />
+          <div className="space-y-4">
+            <UploadReviewContext
+              disabled={status === "checking"}
+              jobDescription={jobDescription}
+              targetRole={targetRole}
+              onJobDescriptionChange={updateJobDescription}
+              onTargetRoleChange={updateTargetRole}
+            />
+            <UploadResumeDropzone
+              disabled={status === "checking"}
+              error={error}
+              isReviewDisabled={!selectedFile || status === "checking"}
+              progress={progress}
+              selectedFile={selectedFile}
+              shouldReduceMotion={shouldReduceMotion}
+              status={status}
+              onFileSelect={selectFile}
+              onReset={resetUpload}
+              onReview={generateReview}
+            />
+          </div>
         </div>
       </section>
 
@@ -119,8 +257,7 @@ export function UploadResumePage() {
           status={status}
         />
         <UploadInsightsPreview
-          insights={resumeInsights}
-          recommendations={resumeRecommendations}
+          review={review}
           shouldReduceMotion={shouldReduceMotion}
           status={status}
         />

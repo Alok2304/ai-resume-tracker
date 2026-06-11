@@ -17,7 +17,7 @@ const columns = [
 
 export function LandingDashboard() {
   return (
-    <section id="pricing" className="bg-white py-20 sm:py-24">
+    <section id="dashboard" className="bg-white py-20 sm:py-24">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
         {/* This section previews the signed-in dashboard value while staying on the landing page. */}
         <AnimatedSection className="max-w-xl">

@@ -8,13 +8,16 @@ import { acceptedResumeInputTypes } from "@/components/ui/upload-resume-data";
 import type { UploadStatus } from "@/components/ui/upload-resume-data";
 
 type UploadResumeDropzoneProps = {
+  disabled?: boolean;
   error: string;
+  isReviewDisabled: boolean;
   progress: number;
   selectedFile: File | null;
   shouldReduceMotion: boolean | null;
   status: UploadStatus;
   onFileSelect: (file?: File) => void;
   onReset: () => void;
+  onReview: () => void;
 };
 
 function formatFileSize(size: number) {
@@ -26,13 +29,16 @@ function formatFileSize(size: number) {
 }
 
 export function UploadResumeDropzone({
+  disabled = false,
   error,
+  isReviewDisabled,
   progress,
   selectedFile,
   shouldReduceMotion,
   status,
   onFileSelect,
   onReset,
+  onReview,
 }: UploadResumeDropzoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -44,12 +50,21 @@ export function UploadResumeDropzone({
   }, [selectedFile]);
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
+    if (disabled) {
+      return;
+    }
+
     onFileSelect(event.target.files?.[0]);
   }
 
   function handleDrop(event: DragEvent<HTMLLabelElement>) {
     event.preventDefault();
     setIsDragging(false);
+
+    if (disabled) {
+      return;
+    }
+
     onFileSelect(event.dataTransfer.files[0]);
   }
 
@@ -68,7 +83,9 @@ export function UploadResumeDropzone({
         }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
-        className={`flex min-h-80 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed p-6 text-center transition sm:p-8 ${
+        className={`flex min-h-80 flex-col items-center justify-center rounded-lg border border-dashed p-6 text-center transition sm:p-8 ${
+          disabled ? "cursor-not-allowed opacity-75" : "cursor-pointer"
+        } ${
           isDragging
             ? "border-slate-950 bg-slate-100"
             : "border-slate-300 bg-slate-50 hover:border-slate-500 hover:bg-white"
@@ -79,6 +96,7 @@ export function UploadResumeDropzone({
           id="resume-file"
           type="file"
           accept={acceptedResumeInputTypes}
+          disabled={disabled}
           className="sr-only"
           onChange={handleInputChange}
         />
@@ -109,7 +127,7 @@ export function UploadResumeDropzone({
 
         {selectedFile ? (
           <motion.div
-            key={selectedFile.name}
+            key={`${selectedFile.name}-${selectedFile.size}-${selectedFile.lastModified}`}
             initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
             animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
             exit={shouldReduceMotion ? undefined : { opacity: 0, y: -12 }}
@@ -120,7 +138,7 @@ export function UploadResumeDropzone({
                 <p className="text-sm font-semibold text-slate-950">{selectedFile.name}</p>
                 <p className="mt-1 text-sm text-slate-500">{formatFileSize(selectedFile.size)}</p>
               </div>
-              <Button type="button" variant="secondary" size="sm" onClick={onReset}>
+              <Button type="button" variant="secondary" size="sm" disabled={disabled} onClick={onReset}>
                 Replace
               </Button>
             </div>
@@ -133,11 +151,25 @@ export function UploadResumeDropzone({
               />
             </div>
             <p className="mt-3 text-sm font-medium text-slate-600">
-              {status === "complete" ? "Review preview ready." : "Preparing resume review..."}
+              {status === "complete"
+                ? "ATS review ready."
+                : status === "checking"
+                  ? "Uploading and reviewing resume..."
+                  : "Ready to review."}
             </p>
           </motion.div>
         ) : null}
       </AnimatePresence>
+
+      <Button
+        type="button"
+        size="lg"
+        className="mt-4 w-full"
+        disabled={isReviewDisabled}
+        onClick={onReview}
+      >
+        {status === "checking" ? "Generating ATS Score..." : status === "complete" ? "Review Again" : "Generate ATS Score"}
+      </Button>
     </motion.div>
   );
 }
